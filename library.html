@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novel Library | Novel Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080617;--panel:rgba(28,15,43,.86);--panel2:rgba(38,18,56,.92);
+  --line:rgba(255,255,255,.11);--text:#eef5ff;--muted:#9eb0c7;
+  --accent:#ffd76a;--accent2:#8c63ff;--good:#66e3a4;
+}
+body{
+  min-height:100vh;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(255,184,77,.16),transparent 26%),
+    radial-gradient(circle at 95% 10%,rgba(140,99,255,.22),transparent 28%),
+    radial-gradient(circle at 50% 100%,rgba(255,95,143,.13),transparent 35%),
+    linear-gradient(135deg,#080617,#180b2d 48%,#0b0618);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:44px 44px;
+  z-index:0;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.profile-box{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{
+  width:min(720px,100%);background:var(--panel);border:1px solid var(--line);
+  border-radius:28px;padding:38px;box-shadow:0 24px 80px rgba(0,0,0,.35);
+  backdrop-filter:blur(18px)
+}
+.logo{font-family:'Playfair Display',serif;font-size:42px;text-align:center;margin-bottom:10px}
+.logo span{color:var(--accent)}
+.subtitle{text-align:center;color:var(--muted);line-height:1.7;margin-bottom:28px}
+h1,h2,h3{font-family:'Playfair Display',serif}
+.terms{
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:18px;padding:20px;max-height:260px;overflow:auto;line-height:1.7;color:#c8d5e5;
+}
+.terms h3{margin-bottom:10px;color:#fff}
+.agree{display:flex;gap:12px;align-items:flex-start;margin:18px 0;color:#c8d5e5;font-size:14px}
+.primary,.secondary,.filter-btn,.mode-btn{
+  border:0;border-radius:14px;padding:12px 17px;transition:.2s
+}
+.primary{width:100%;background:linear-gradient(135deg,#ffb84d,#ff5f8f);color:white;font-weight:700}
+.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.secondary{background:rgba(255,255,255,.07);border:1px solid var(--line);color:white}
+.input{
+  width:100%;padding:14px 16px;background:rgba(255,255,255,.055);
+  border:1px solid var(--line);border-radius:14px;color:white;outline:none;margin:12px 0 18px
+}
+.input:focus{border-color:rgba(255,215,106,.6);box-shadow:0 0 0 3px rgba(255,215,106,.08)}
+.step-title{text-align:center;margin-bottom:10px;font-size:28px}
+.icon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.icon-choice{
+  padding:22px 10px;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  border-radius:18px;color:white;font-size:38px
+}
+.icon-choice:hover{border-color:var(--accent);transform:translateY(-2px)}
+.dashboard{width:min(1200px,100%);margin:auto;padding:34px 22px 60px;position:relative;z-index:2}
+/* THIRD PAGE: OPEN DIRECTLY TO LIBRARY */
+#dashboard > .topbar,
+#dashboard > .dashboard-grid,
+#dashboard > #dashboardNotice,
+#dashboard > #programDirectory{display:none}
+#dashboard{padding-top:22px}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:30px}
+.profile-mini{display:flex;align-items:center;gap:12px}
+.avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:25px;border:1px solid var(--line)}
+.welcome h1{font-size:34px}.welcome p{color:var(--muted);margin-top:5px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dash-card{
+  min-height:145px;text-align:left;color:white;background:var(--panel);
+  border:1px solid var(--line);border-radius:22px;padding:22px;transition:.2s
+}
+.dash-card:hover{transform:translateY(-4px);border-color:rgba(255,215,106,.45)}
+.dash-icon{font-size:32px;margin-bottom:20px}.dash-card h3{font-size:20px;margin-bottom:7px}.dash-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.notice{margin:22px 0;padding:15px 18px;border:1px solid rgba(110,231,183,.2);background:rgba(110,231,183,.05);border-radius:15px;color:#bdebd8;font-size:13px}
+.section{margin-top:28px;background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:24px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}
+.section-head h2{font-size:30px}.section-head p{color:var(--muted);line-height:1.6;margin-top:6px}
+.library-tools{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:16px}
+.search-wrap{position:relative}.search-wrap span{position:absolute;left:15px;top:13px}.search-wrap input{padding-left:45px;margin:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{background:rgba(255,255,255,.055);border:1px solid var(--line);color:#cbd7e6}
+.filter-btn.active,.filter-btn:hover{background:rgba(255,215,106,.13);border-color:rgba(255,215,106,.5);color:white}
+.library-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:14px}
+.book-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.book-card{
+  background:rgba(255,255,255,.045);border:1px solid var(--line);
+  border-radius:19px;padding:18px;display:flex;flex-direction:column;min-height:270px
+}
+.book-cover{height:92px;border-radius:14px;display:grid;place-items:center;font-size:38px;background:linear-gradient(135deg,rgba(255,184,77,.17),rgba(140,99,255,.18));margin-bottom:15px}
+.book-tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:7px}
+.book-card h3{font-size:19px;line-height:1.25;margin-bottom:6px}.author{color:#c5d1df;font-size:13px}.desc{color:var(--muted);font-size:12px;line-height:1.55;margin:11px 0 15px;flex:1}
+.book-actions{display:flex;gap:8px}.read-btn{flex:1;padding:10px;border-radius:11px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5f8f);color:white;font-weight:700}.source-btn{padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:transparent;color:#dbeafe;text-decoration:none}
+.program-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.program{
+  border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:15px;
+  padding:15px;color:#d9e5f3;text-align:left
+}
+.program strong{display:block;color:white;margin-bottom:5px}.program small{color:var(--muted);line-height:1.4}
+.ai-header{display:flex;justify-content:space-between;align-items:center;gap:12px}.modes{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.mode-btn{background:rgba(255,255,255,.05);color:#cad7e7;border:1px solid var(--line);font-size:12px}.mode-btn.active{background:rgba(167,139,250,.16);border-color:rgba(167,139,250,.55);color:white}
+.chat{height:360px;overflow:auto;border:1px solid var(--line);border-radius:17px;padding:15px;background:rgba(0,0,0,.12)}
+.msg{max-width:85%;padding:11px 14px;border-radius:14px;margin-bottom:10px;line-height:1.55;font-size:14px;white-space:pre-wrap}
+.user-msg{margin-left:auto;background:rgba(255,184,77,.12);border:1px solid rgba(255,184,77,.16)}
+.ai-msg{background:rgba(255,255,255,.055);border:1px solid var(--line)}
+.chat-row{display:flex;gap:10px;margin-top:12px}.chat-row input{margin:0}.chat-row button{width:auto;padding:0 20px}
+.footer{text-align:center;color:#71839a;font-size:12px;margin-top:25px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:20;display:none;padding:20px}
+.modal.show{display:flex;align-items:center;justify-content:center}
+.reader{width:min(1100px,100%);height:min(88vh,900px);background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.reader-bar{background:#101b2c;color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.reader-title{font-weight:700}.close{border:1px solid rgba(255,255,255,.2);background:transparent;color:white;border-radius:9px;padding:7px 11px}
+.reader iframe{border:0;flex:1;width:100%}
+.reader-note{background:#101b2c;color:#9eb0c7;font-size:11px;padding:7px 12px}
+.empty{padding:35px;text-align:center;color:var(--muted);grid-column:1/-1}
+@media(max-width:950px){.dashboard-grid{grid-template-columns:repeat(2,1fr)}.book-grid{grid-template-columns:repeat(2,1fr)}.program-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.card{padding:25px}.dashboard{padding:22px 14px}.topbar{align-items:flex-start}.welcome h1{font-size:27px}.dashboard-grid,.book-grid,.program-grid{grid-template-columns:1fr}.library-tools{grid-template-columns:1fr}.section{padding:17px}.chat-row{flex-direction:column}.chat-row button{width:100%;padding:12px}.icon-grid{grid-template-columns:1fr}}
+
+/* CONNECTED NOVEL AI */
+.book-actions{flex-wrap:wrap}
+.ask-book-ai{flex:1;padding:10px;border-radius:11px;border:1px solid rgba(167,139,250,.4);background:rgba(167,139,250,.13);color:white;font-weight:700}
+.ask-book-ai:hover{background:rgba(167,139,250,.24);border-color:rgba(167,139,250,.65)}
+.library-ai-fab{position:fixed;right:22px;bottom:22px;z-index:60;border:1px solid rgba(125,211,252,.4);background:linear-gradient(135deg,#315efb,#8b5cf6);color:white;border-radius:999px;padding:12px 16px;font-weight:700;box-shadow:0 12px 35px rgba(0,0,0,.38)}
+.library-ai-panel{position:fixed;right:22px;bottom:80px;width:min(430px,calc(100vw - 28px));z-index:70;display:none;background:#0b1524;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:15px;box-shadow:0 20px 70px rgba(0,0,0,.5)}
+.library-ai-panel.show{display:block}
+.library-ai-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.library-ai-chat{height:260px;overflow:auto;background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:13px;padding:10px}
+.library-ai-msg{max-width:82%;padding:9px 11px;border-radius:11px;margin-bottom:8px;line-height:1.5;font-size:13px;white-space:pre-wrap}
+.library-ai-msg.user{margin-left:auto;background:rgba(49,94,251,.22)}
+.library-ai-msg.bot{background:rgba(255,255,255,.055)}
+.library-ai-row{display:grid;grid-template-columns:1fr 48px;gap:7px;margin-top:8px}
+.library-ai-row input{width:100%;margin:0}
+.library-ai-send{width:48px!important;padding:0!important;margin:0!important}
+@media(max-width:620px){.library-ai-fab{right:12px;bottom:12px}.library-ai-panel{right:12px;bottom:65px}}
+</style>
+</head>
+<body>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard">
+  <div class="topbar">
+    <div class="welcome">
+      <h1>Novel Library</h1>
+      <p>Your university library for books, study resources and Novel AI support.</p>
+    </div>
+    <div class="profile-mini">
+      <div class="avatar" id="profileIcon">🎓</div>
+      <div><strong id="profileName">Student</strong><div style="font-size:12px;color:var(--muted)" id="profileLocation"></div></div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <button class="dash-card" onclick="dashboardMessage('Study Materials')"><div class="dash-icon">📑</div><h3>Study Materials</h3><p>Notes, guides and learning resources.</p></button>
+    <button class="dash-card" onclick="dashboardMessage('Tutors')"><div class="dash-icon">👨‍🏫</div><h3>Tutors</h3><p>Find academic support and study guidance.</p></button>
+    <button class="dash-card" onclick="openBooks()"><div class="dash-icon">📚</div><h3>Books</h3><p>Search university books by faculty, department or subject.</p></button>
+    <button class="dash-card" onclick="dashboardMessage('Study Tools')"><div class="dash-icon">🧰</div><h3>Study Tools</h3><p>Useful tools for revision and productivity.</p></button>
+  </div>
+
+  <div id="dashboardNotice" class="notice hidden"></div>
+
+  <!-- UNIVERSITY PROGRAM DIRECTORY -->
+  <section class="section" id="programDirectory">
+    <div class="section-head">
+      <div>
+        <h2>University Program Directory</h2>
+        <p>Novel Match is structured to support major university faculties, departments and career paths.</p>
+      </div>
+    </div>
+    <div class="program-grid" id="programGrid"></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="section" id="library">
+    <div class="section-head">
+      <div>
+        <h2>📚 Novel Library</h2>
+        <p>Open-access and public-domain resources across major university disciplines.</p>
+      </div>
+      <button class="secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Dashboard</button>
+    </div>
+
+    <div class="notice" style="margin-top:0">
+      Novel Match uses legitimate open-access/public-domain sources. OpenStax provides free, openly licensed college textbooks, while Project Gutenberg provides a large catalogue of public-domain works. Availability and copyright rules can vary by country.
+    </div>
+
+    <div class="library-tools">
+      <div class="search-wrap"><span>🔎</span><input class="input" id="bookSearch" placeholder="Search books, authors, subjects, departments..." oninput="filterBooks()"></div>
+      <button class="secondary" onclick="clearBookSearch()">Clear</button>
+    </div>
+
+    <div class="filters" id="categoryFilters"></div>
+    <div class="library-meta"><span id="bookCount">0 resources</span><span>Click Read to open the resource in Novel Match.</span></div>
+    <div class="book-grid" id="bookGrid"></div>
+  </section>
+
+  <!-- AI ASSISTANT -->
+  <section class="section" id="aiAssistant">
+    <div class="ai-header"><div><h2>🤖 AI Study Assistant</h2><p style="color:var(--muted);margin-top:5px">Ask questions about your courses, books or study topics.</p></div></div>
+    <div class="modes">
+      <button class="mode-btn active" onclick="setAIMode('Explain',this)">Explain</button>
+      <button class="mode-btn" onclick="setAIMode('Summarize',this)">Summarize</button>
+      <button class="mode-btn" onclick="setAIMode('Solve',this)">Solve</button>
+      <button class="mode-btn" onclick="setAIMode('Quiz Me',this)">Quiz Me</button>
+      <button class="mode-btn" onclick="setAIMode('Flashcards',this)">Flashcards</button>
+      <button class="mode-btn" onclick="setAIMode('Study Plan',this)">Study Plan</button>
+    </div>
+    <div class="chat" id="aiChat">
+      <div class="msg ai-msg">Hi! I'm Novel AI. Ask me a university question and I'll give you a clear, well-structured answer.</div>
+    </div>
+    <div class="chat-row">
+      <input class="input" id="aiQuestion" placeholder="Ask your study question..." onkeydown="handleEnter(event)">
+      <button class="primary" onclick="askAI()">Ask</button>
+    </div>
+  </section>
+
+  <div class="copyright-box" style="margin-top:18px;padding:18px 20px;border:1px solid rgba(255,215,106,.18);border-radius:18px;background:linear-gradient(135deg,rgba(255,215,106,.06),rgba(140,99,255,.07));color:#bdb2c8;font-size:12px;line-height:1.7">
+  <strong style="color:#ffd76a">Copyright &amp; Source Notice</strong><br>
+  Novel Library does not claim ownership of third-party books or learning materials. Resources are linked from their respective publishers, open-access repositories or public-domain sources. Copyright remains with the original rights holders. Users should follow the copyright, licensing and access rules that apply in their country.
+</div>
+<div class="footer">Novel Match • Built for university students • Library resources are provided through their respective sources.</div>
+</div>
+
+<!-- READER -->
+<div class="modal" id="readerModal">
+  <div class="reader">
+    <div class="reader-bar">
+      <div class="reader-title" id="readerTitle">Novel Match Reader</div>
+      <button class="close" onclick="closeReader()">Close ✕</button>
+    </div>
+    <iframe id="readerFrame" title="Novel Match Book Reader"></iframe>
+    <div class="reader-note">If the source does not allow embedding, use the source button on the book card to open the book directly.</div>
+  </div>
+</div>
+
+<script>
+let currentAIMode='Explain';
+let activeCategory='All';
+
+function dashboardMessage(section){
+  const n=document.getElementById('dashboardNotice');
+  n.textContent=section+' is ready to be connected to your Novel Match modules.';
+  n.classList.remove('hidden');
+  n.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function openBooks(){
+  document.getElementById('library').scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>document.getElementById('bookSearch').focus(),500);
+}
+
+const programs=[
+ {faculty:'Humanities & Social Sciences',departments:'Sociology • Political Science • Development Studies • Psychology • History • Philosophy • Geography'},
+ {faculty:'Business & Economics',departments:'Business Administration • Accounting • Finance • Economics • Marketing • Entrepreneurship • Banking'},
+ {faculty:'Education',departments:'Primary Education • Secondary Education • Educational Psychology • Special Education • Curriculum Studies'},
+ {faculty:'Natural Sciences',departments:'Biology • Chemistry • Physics • Mathematics • Statistics • Environmental Science'},
+ {faculty:'Engineering',departments:'Civil • Mechanical • Electrical • Chemical • Agricultural • Biomedical Engineering'},
+ {faculty:'Computing & ICT',departments:'Computer Science • Software Engineering • Information Systems • Cybersecurity • Data Science'},
+ {faculty:'Agriculture & Natural Resources',departments:'Agronomy • Animal Science • Agricultural Economics • Forestry • Fisheries • Food Science'},
+ {faculty:'Health Sciences',departments:'Medicine • Nursing • Pharmacy • Public Health • Biomedical Sciences • Nutrition'},
+ {faculty:'Law',departments:'Constitutional • Criminal • Commercial • International • Human Rights • Administrative Law'},
+ {faculty:'Built Environment',departments:'Architecture • Quantity Surveying • Construction • Real Estate • Urban & Regional Planning'},
+ {faculty:'Media & Communication',departments:'Journalism • Mass Communication • Public Relations • Broadcasting • Digital Media'},
+ {faculty:'Languages & Literature',departments:'English • Linguistics • Literature • French • African Languages • Communication'},
+ {faculty:'Arts & Creative Studies',departments:'Fine Arts • Music • Theatre • Design • Creative Writing'},
+ {faculty:'Social & Behavioral Sciences',departments:'Anthropology • Psychology • Sociology • Social Work • Criminology'},
+ {faculty:'Mathematics & Quantitative Studies',departments:'Pure Mathematics • Applied Mathematics • Statistics • Actuarial Science • Data Analytics'}
+];
+
+function renderPrograms(){
+  document.getElementById('programGrid').innerHTML=programs.map(p=>`
+    <button class="program" onclick="filterByText('${escapeHTML(p.faculty)}')">
+      <strong>${escapeHTML(p.faculty)}</strong><small>${escapeHTML(p.departments)}</small>
+    </button>`).join('');
+}
+
+function filterByText(text){
+  document.getElementById('bookSearch').value=text;
+  activeCategory='All';
+  renderFilters();
+  filterBooks();
+  openBooks();
+}
+
+const books=[
+/* HUMANITIES / SOCIAL SCIENCES */
+{title:'Introduction to Sociology 3e',author:'OpenStax',year:'2021',subject:'Sociology',faculty:'Humanities & Social Sciences',cover:'👥',desc:'Free peer-reviewed introductory sociology textbook.',url:'https://openstax.org/details/books/introduction-sociology-3e'},
+{title:'Psychology 2e',author:'OpenStax',year:'2020',subject:'Psychology',faculty:'Social & Behavioral Sciences',cover:'🧠',desc:'Foundational concepts, research methods and major areas of psychology.',url:'https://openstax.org/details/books/psychology-2e'},
+{title:'American Government 4e',author:'OpenStax',year:'2022',subject:'Political Science',faculty:'Humanities & Social Sciences',cover:'🏛️',desc:'Open textbook covering core concepts in government and political institutions.',url:'https://openstax.org/details/books/american-government-4e'},
+{title:'Introduction to Political Science',author:'OpenStax',year:'Open resource',subject:'Political Science',faculty:'Humanities & Social Sciences',cover:'🗳️',desc:'Introductory political science resource covering political institutions and systems.',url:'https://openstax.org/subjects/social-sciences'},
+{title:'The Souls of Black Folk',author:'W. E. B. Du Bois',year:'1903',subject:'Sociology',faculty:'Humanities & Social Sciences',cover:'📖',desc:'Classic work on race, identity, society and African American life.',url:'https://www.gutenberg.org/ebooks/408'},
+{title:'The Prince',author:'Niccolò Machiavelli',year:'1513',subject:'Political Science',faculty:'Humanities & Social Sciences',cover:'👑',desc:'Classic work on political power, leadership and statecraft.',url:'https://www.gutenberg.org/ebooks/1232'},
+{title:'Leviathan',author:'Thomas Hobbes',year:'1651',subject:'Political Philosophy',faculty:'Humanities & Social Sciences',cover:'⚖️',desc:'Foundational text on political authority, sovereignty and the social contract.',url:'https://www.gutenberg.org/ebooks/3207'},
+{title:'The Republic',author:'Plato',year:'Classical',subject:'Philosophy',faculty:'Humanities & Social Sciences',cover:'🏛️',desc:'Foundational philosophical dialogue on justice, education and the ideal state.',url:'https://www.gutenberg.org/ebooks/1497'},
+{title:'The Communist Manifesto',author:'Karl Marx & Friedrich Engels',year:'1848',subject:'Political Thought',faculty:'Humanities & Social Sciences',cover:'📜',desc:'Classic political and social theory text.',url:'https://www.gutenberg.org/ebooks/61'},
+{title:'Democracy in America',author:'Alexis de Tocqueville',year:'1835',subject:'Political Science',faculty:'Humanities & Social Sciences',cover:'🗳️',desc:'Classic analysis of democracy, society and political institutions.',url:'https://www.gutenberg.org/ebooks/815'},
+{title:'The Wealth of Nations',author:'Adam Smith',year:'1776',subject:'Economics',faculty:'Business & Economics',cover:'💰',desc:'Foundational economics work on markets, specialization and wealth.',url:'https://www.gutenberg.org/ebooks/3300'},
+{title:'Principles of Economics',author:'OpenStax',year:'Open resource',subject:'Economics',faculty:'Business & Economics',cover:'📈',desc:'Free economics textbooks and materials for introductory study.',url:'https://openstax.org/subjects/social-sciences'},
+{title:'Principles of Macroeconomics 3e',author:'OpenStax',year:'Open resource',subject:'Economics',faculty:'Business & Economics',cover:'📊',desc:'Macroeconomic principles, national income, inflation and policy.',url:'https://openstax.org/subjects/social-sciences'},
+{title:'Principles of Microeconomics 3e',author:'OpenStax',year:'Open resource',subject:'Economics',faculty:'Business & Economics',cover:'📉',desc:'Microeconomic principles, markets, consumers and firms.',url:'https://openstax.org/subjects/social-sciences'},
+{title:'History Open Resources',author:'Project Gutenberg',year:'Open collection',subject:'History',faculty:'Humanities & Social Sciences',cover:'🏺',desc:'Large public-domain history collection covering ancient to modern periods.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Philosophy & Ethics Collection',author:'Project Gutenberg',year:'Open collection',subject:'Philosophy',faculty:'Humanities & Social Sciences',cover:'🤔',desc:'Public-domain philosophy and ethics works.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Anthropology & Archaeology Collection',author:'Project Gutenberg',year:'Open collection',subject:'Anthropology',faculty:'Social & Behavioral Sciences',cover:'🗿',desc:'Public-domain works in anthropology and archaeology.',url:'https://www.gutenberg.org/ebooks/categories'},
+
+/* BUSINESS */
+{title:'Introduction to Business 2e',author:'OpenStax',year:'Open resource',subject:'Business Administration',faculty:'Business & Economics',cover:'💼',desc:'Foundations of business, organizations, markets and management.',url:'https://openstax.org/subjects/business'},
+{title:'Principles of Management',author:'OpenStax',year:'Open resource',subject:'Management',faculty:'Business & Economics',cover:'🧭',desc:'Management principles, planning, organizing, leading and controlling.',url:'https://openstax.org/subjects/business'},
+{title:'Principles of Marketing',author:'OpenStax',year:'Open resource',subject:'Marketing',faculty:'Business & Economics',cover:'📣',desc:'Marketing strategy, consumer behavior, segmentation and promotion.',url:'https://openstax.org/subjects/business'},
+{title:'Principles of Finance 2e',author:'OpenStax',year:'Open resource',subject:'Finance',faculty:'Business & Economics',cover:'💳',desc:'Finance fundamentals including risk, return and financial decisions.',url:'https://openstax.org/subjects/business'},
+{title:'Financial Accounting',author:'OpenStax',year:'Open resource',subject:'Accounting',faculty:'Business & Economics',cover:'🧾',desc:'Core financial accounting concepts and statements.',url:'https://openstax.org/subjects/business'},
+{title:'Managerial Accounting',author:'OpenStax',year:'Open resource',subject:'Accounting',faculty:'Business & Economics',cover:'📒',desc:'Accounting information for management planning and decisions.',url:'https://openstax.org/subjects/business'},
+{title:'Entrepreneurship',author:'OpenStax',year:'Open resource',subject:'Entrepreneurship',faculty:'Business & Economics',cover:'🚀',desc:'Starting, developing and managing entrepreneurial ventures.',url:'https://openstax.org/subjects/business'},
+{title:'Organizational Behavior',author:'OpenStax',year:'Open resource',subject:'Organizational Behavior',faculty:'Business & Economics',cover:'🏢',desc:'People, teams, motivation, leadership and organizations.',url:'https://openstax.org/subjects/business'},
+{title:'Business Ethics',author:'OpenStax',year:'Open resource',subject:'Business Ethics',faculty:'Business & Economics',cover:'⚖️',desc:'Ethical decision-making in business and organizations.',url:'https://openstax.org/subjects/business'},
+{title:'Business Law I Essentials',author:'OpenStax',year:'Open resource',subject:'Business Law',faculty:'Law',cover:'⚖️',desc:'Legal principles relevant to business activity.',url:'https://openstax.org/subjects/business'},
+
+/* COMPUTING */
+{title:'Introduction to Computer Science',author:'OpenStax',year:'Open resource',subject:'Computer Science',faculty:'Computing & ICT',cover:'💻',desc:'Foundational computing concepts and computational thinking.',url:'https://openstax.org/subjects/computer-science'},
+{title:'Principles of Data Science',author:'OpenStax',year:'Open resource',subject:'Data Science',faculty:'Computing & ICT',cover:'📊',desc:'Data concepts, analysis and introductory data science skills.',url:'https://openstax.org/subjects/computer-science'},
+{title:'Research Methods / Statistics / Information Systems',author:'Project Gutenberg',year:'Open collection',subject:'Information Systems',faculty:'Computing & ICT',cover:'🗃️',desc:'Open and public-domain resources related to statistics and information systems.',url:'https://www.gutenberg.org/ebooks/categories'},
+
+/* MATH */
+{title:'College Algebra 2e',author:'OpenStax',year:'Open resource',subject:'Mathematics',faculty:'Mathematics & Quantitative Studies',cover:'➗',desc:'College algebra concepts and problem-solving.',url:'https://openstax.org/subjects/math'},
+{title:'Calculus Volume 1',author:'OpenStax',year:'Open resource',subject:'Calculus',faculty:'Mathematics & Quantitative Studies',cover:'∫',desc:'Limits, derivatives and integrals.',url:'https://openstax.org/subjects/math'},
+{title:'Calculus Volume 2',author:'OpenStax',year:'Open resource',subject:'Calculus',faculty:'Mathematics & Quantitative Studies',cover:'∑',desc:'Integration techniques, differential equations and applications.',url:'https://openstax.org/subjects/math'},
+{title:'Calculus Volume 3',author:'OpenStax',year:'Open resource',subject:'Calculus',faculty:'Mathematics & Quantitative Studies',cover:'∞',desc:'Multivariable calculus and advanced topics.',url:'https://openstax.org/subjects/math'},
+{title:'Introductory Statistics 2e',author:'OpenStax',year:'Open resource',subject:'Statistics',faculty:'Mathematics & Quantitative Studies',cover:'📐',desc:'Descriptive statistics, probability, inference and regression.',url:'https://openstax.org/subjects/math'},
+{title:'Precalculus 2e',author:'OpenStax',year:'Open resource',subject:'Mathematics',faculty:'Mathematics & Quantitative Studies',cover:'📏',desc:'Functions, trigonometry and preparation for calculus.',url:'https://openstax.org/subjects/math'},
+
+/* SCIENCE */
+{title:'Biology 2e',author:'OpenStax',year:'Open resource',subject:'Biology',faculty:'Natural Sciences',cover:'🧬',desc:'Comprehensive introductory biology textbook.',url:'https://openstax.org/subjects/science'},
+{title:'Chemistry 2e',author:'OpenStax',year:'Open resource',subject:'Chemistry',faculty:'Natural Sciences',cover:'⚗️',desc:'Atoms, molecules, reactions, thermodynamics and chemistry fundamentals.',url:'https://openstax.org/subjects/science'},
+{title:'College Physics 2e',author:'OpenStax',year:'Open resource',subject:'Physics',faculty:'Natural Sciences',cover:'⚛️',desc:'Introductory physics with broad college-level coverage.',url:'https://openstax.org/subjects/science'},
+{title:'University Physics Volume 1',author:'OpenStax',year:'Open resource',subject:'Physics',faculty:'Natural Sciences',cover:'🌌',desc:'Mechanics, waves and foundational university physics.',url:'https://openstax.org/subjects/science'},
+{title:'University Physics Volume 2',author:'OpenStax',year:'Open resource',subject:'Physics',faculty:'Natural Sciences',cover:'🔭',desc:'Thermodynamics, electricity, magnetism and related topics.',url:'https://openstax.org/subjects/science'},
+{title:'University Physics Volume 3',author:'OpenStax',year:'Open resource',subject:'Physics',faculty:'Natural Sciences',cover:'🪐',desc:'Optics, relativity, quantum and advanced physics topics.',url:'https://openstax.org/subjects/science'},
+{title:'Microbiology',author:'OpenStax',year:'Open resource',subject:'Microbiology',faculty:'Natural Sciences',cover:'🦠',desc:'Microorganisms, infection, genetics and microbial systems.',url:'https://openstax.org/subjects/science'},
+{title:'Anatomy and Physiology 2e',author:'OpenStax',year:'Open resource',subject:'Anatomy & Physiology',faculty:'Health Sciences',cover:'🫀',desc:'Human body structure and function.',url:'https://openstax.org/subjects/science'},
+{title:'Astronomy 2e',author:'OpenStax',year:'Open resource',subject:'Astronomy',faculty:'Natural Sciences',cover:'🌠',desc:'Stars, galaxies, planets and the universe.',url:'https://openstax.org/subjects/science'},
+{title:'Organic Chemistry',author:'OpenStax',year:'Open resource',subject:'Chemistry',faculty:'Natural Sciences',cover:'🧪',desc:'Organic structures, reactions and mechanisms.',url:'https://openstax.org/subjects/science'},
+
+/* HEALTH */
+{title:'Anatomy and Physiology 2e',author:'OpenStax',year:'Open resource',subject:'Medicine',faculty:'Health Sciences',cover:'🫀',desc:'Foundational anatomy and physiology for health students.',url:'https://openstax.org/subjects/science'},
+{title:'Microbiology',author:'OpenStax',year:'Open resource',subject:'Health Sciences',faculty:'Health Sciences',cover:'🦠',desc:'Microbial life and disease-related concepts.',url:'https://openstax.org/subjects/science'},
+{title:'Psychology 2e',author:'OpenStax',year:'Open resource',subject:'Health Psychology',faculty:'Health Sciences',cover:'🧠',desc:'Psychology foundations relevant to health and human behavior.',url:'https://openstax.org/details/books/psychology-2e'},
+{title:'Nutrition Resources',author:'OpenStax',year:'Open resource',subject:'Nutrition',faculty:'Health Sciences',cover:'🥗',desc:'Open educational resources relevant to nutrition and health.',url:'https://openstax.org/subjects/science'},
+
+/* AGRICULTURE / ENVIRONMENT */
+{title:'Earth & Agricultural / Farming Collection',author:'Project Gutenberg',year:'Open collection',subject:'Agriculture',faculty:'Agriculture & Natural Resources',cover:'🌱',desc:'Public-domain resources in agriculture, farming and earth sciences.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Environmental Issues Collection',author:'Project Gutenberg',year:'Open collection',subject:'Environmental Science',faculty:'Natural Sciences',cover:'🌍',desc:'Open/public-domain environmental reading.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Biology 2e',author:'OpenStax',year:'Open resource',subject:'Agricultural Biology',faculty:'Agriculture & Natural Resources',cover:'🌾',desc:'Biology foundations supporting agricultural studies.',url:'https://openstax.org/subjects/science'},
+
+/* ENGINEERING */
+{title:'College Physics 2e',author:'OpenStax',year:'Open resource',subject:'Engineering Physics',faculty:'Engineering',cover:'⚙️',desc:'Physics foundation useful across engineering programs.',url:'https://openstax.org/subjects/science'},
+{title:'University Physics Volume 1',author:'OpenStax',year:'Open resource',subject:'Engineering',faculty:'Engineering',cover:'🔧',desc:'University-level mechanics and physics.',url:'https://openstax.org/subjects/science'},
+{title:'Chemistry 2e',author:'OpenStax',year:'Open resource',subject:'Engineering Chemistry',faculty:'Engineering',cover:'⚗️',desc:'Chemistry foundation for engineering students.',url:'https://openstax.org/subjects/science'},
+{title:'Calculus Volume 1',author:'OpenStax',year:'Open resource',subject:'Engineering Mathematics',faculty:'Engineering',cover:'∫',desc:'Calculus foundation for engineering mathematics.',url:'https://openstax.org/subjects/math'},
+
+/* LAW */
+{title:'Business Law I Essentials',author:'OpenStax',year:'Open resource',subject:'Commercial Law',faculty:'Law',cover:'⚖️',desc:'Business law fundamentals and legal frameworks.',url:'https://openstax.org/subjects/business'},
+{title:'Law & Criminology Collection',author:'Project Gutenberg',year:'Open collection',subject:'Law',faculty:'Law',cover:'⚖️',desc:'Public-domain legal and criminology works.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'American Government 4e',author:'OpenStax',year:'Open resource',subject:'Constitutional / Political Studies',faculty:'Law',cover:'🏛️',desc:'Government and institutions resource supporting constitutional and public law study.',url:'https://openstax.org/details/books/american-government-4e'},
+
+/* MEDIA / LANGUAGE / ARTS / EDUCATION */
+{title:'Journalism, Media & Writing Collection',author:'Project Gutenberg',year:'Open collection',subject:'Journalism',faculty:'Media & Communication',cover:'📰',desc:'Public-domain works related to writing, journalism and communication.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Language & Communication Collection',author:'Project Gutenberg',year:'Open collection',subject:'Languages',faculty:'Languages & Literature',cover:'🗣️',desc:'Public-domain works involving language and communication.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Literature Collection',author:'Project Gutenberg',year:'Open collection',subject:'Literature',faculty:'Languages & Literature',cover:'📚',desc:'Large public-domain literature collection.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Art & Architecture Collection',author:'Project Gutenberg',year:'Open collection',subject:'Art & Architecture',faculty:'Arts & Creative Studies',cover:'🎨',desc:'Public-domain resources in art and architecture.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'Teaching & Education Collection',author:'Project Gutenberg',year:'Open collection',subject:'Education',faculty:'Education',cover:'👩‍🏫',desc:'Public-domain educational and teaching resources.',url:'https://www.gutenberg.org/ebooks/categories'},
+{title:'College Success',author:'OpenStax',year:'Open resource',subject:'Study Skills',faculty:'Education',cover:'🎓',desc:'Study skills, learning strategies and college success resources.',url:'https://openstax.org/subjects/college-success'}
+];
+
+const categories=[...new Set(books.map(b=>b.subject))].sort();
+
+function renderFilters(){
+  const list=['All',...categories];
+  document.getElementById('categoryFilters').innerHTML=list.map(c=>
+    `<button class="filter-btn ${activeCategory===c?'active':''}" onclick="setBookCategory('${escapeHTML(c)}')">${escapeHTML(c)}</button>`
+  ).join('');
+}
+
+function setBookCategory(cat){
+  activeCategory=cat;
+  renderFilters();
+  renderBooks();
+}
+
+function filterBooks(){ renderBooks(); }
+
+function clearBookSearch(){
+  document.getElementById('bookSearch').value='';
+  activeCategory='All';
+  renderFilters();
+  renderBooks();
+}
+
+function renderBooks(){
+  const query=(document.getElementById('bookSearch')?.value||'').toLowerCase().trim();
+  const filtered=books.filter(b=>{
+    const categoryMatch=activeCategory==='All'||b.subject===activeCategory;
+    const text=(b.title+' '+b.author+' '+b.subject+' '+b.faculty+' '+b.desc).toLowerCase();
+    return categoryMatch && (!query||text.includes(query));
+  });
+  document.getElementById('bookCount').textContent=filtered.length+' resources';
+  const grid=document.getElementById('bookGrid');
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty">No resources found. Try another subject, department or search term.</div>';
+    return;
+  }
+  grid.innerHTML=filtered.map((b,i)=>`
+    <article class="book-card">
+      <div class="book-cover">${b.cover}</div>
+      <div class="book-tag">${escapeHTML(b.subject)} • ${escapeHTML(b.year)}</div>
+      <h3>${escapeHTML(b.title)}</h3>
+      <div class="author">${escapeHTML(b.author)}</div>
+      <div class="desc">${escapeHTML(b.desc)}</div>
+      <div class="book-actions">
+        <button class="read-btn" onclick="openReader(${books.indexOf(b)})">Read</button>
+        <button class="ask-book-ai" onclick="askBookAI(${books.indexOf(b)})"><i class="fa-solid fa-brain"></i> Ask AI</button>
+        <a class="source-btn" href="${b.url}" target="_blank" rel="noopener">Source</a>
+      </div>
+    </article>
+  `).join('');
+}
+
+function openReader(index){
+  const b=books[index];
+  document.getElementById('readerTitle').textContent=b.title+' — '+b.author;
+  document.getElementById('readerFrame').src=b.url;
+  document.getElementById('readerModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeReader(){
+  document.getElementById('readerFrame').src='about:blank';
+  document.getElementById('readerModal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+document.getElementById('readerModal').addEventListener('click',e=>{
+  if(e.target.id==='readerModal') closeReader();
+});
+
+function setAIMode(mode,btn){
+  currentAIMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+
+function handleEnter(e){ if(e.key==='Enter') askAI(); }
+
+async function askAI(){
+  const input=document.getElementById('aiQuestion');
+  const question=input.value.trim();
+  if(!question)return;
+  const chat=document.getElementById('aiChat');
+  chat.innerHTML+=`<div class="msg user-msg">${escapeHTML(question)}</div>`;
+  input.value='';
+  chat.innerHTML+=`<div class="msg ai-msg" id="thinking">Thinking...</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const response=await fetch('/api/ai',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:buildLibraryPrompt(question)})
+    });
+    if(!response.ok) throw new Error('Server error');
+    const data=await response.json();
+    document.getElementById('thinking').remove();
+    chat.innerHTML+=`<div class="msg ai-msg">${escapeHTML(data.reply||data.message||'I could not generate a response.')}</div>`;
+  }catch(err){
+    document.getElementById('thinking').remove();
+    chat.innerHTML+=`<div class="msg ai-msg">I couldn't reach the AI server. Make sure your /api/chat backend is running.</div>`;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+function toggleLibraryAI(){document.getElementById('libraryAIPanel').classList.toggle('show');document.getElementById('libraryAIInput')?.focus();}
+function handleLibraryAIEnter(e){if(e.key==='Enter'){e.preventDefault();sendLibraryAI();}}
+function askBookAI(index){const b=books[index];document.getElementById('libraryAIContext').textContent='Book: '+b.title+' • '+b.subject;document.getElementById('libraryAIChat').innerHTML='<div class="library-ai-msg bot">I am ready to help you study '+escapeHTML(b.title)+'. Ask me to explain the book, summarize its main ideas, create questions, or connect it to your course.</div>';document.getElementById('libraryAIInput').value='Explain '+b.title+' and show me the important ideas I should know for university study.';document.getElementById('libraryAIPanel').classList.add('show');document.getElementById('libraryAIInput').focus();}
+async function sendLibraryAI(){const input=document.getElementById('libraryAIInput');const q=(input.value||'').trim();if(!q)return;const chat=document.getElementById('libraryAIChat');chat.innerHTML+=`<div class="library-ai-msg user">${escapeHTML(q)}</div>`;input.value='';chat.innerHTML+='<div class="library-ai-msg bot" id="libraryAIThinking">Thinking...</div>';chat.scrollTop=chat.scrollHeight;try{const r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:buildLibraryAIPrompt(q)})});const data=await r.json();document.getElementById('libraryAIThinking')?.remove();if(!r.ok)throw new Error(data.error||'AI request failed');chat.innerHTML+=`<div class="library-ai-msg bot">${escapeHTML(cleanLibraryAIResponse(data.reply||'No response received.'))}</div>`;}catch(e){document.getElementById('libraryAIThinking')?.remove();chat.innerHTML+=`<div class="library-ai-msg bot">Novel AI could not connect right now: ${escapeHTML(e.message)}</div>`;}chat.scrollTop=chat.scrollHeight;}
+function buildLibraryAIPrompt(q){return `You are Novel AI, a polished university study assistant inside Novel Match. Answer like a high-quality conversational AI tutor. Start with a direct answer or brief introduction. Use short headings when helpful, concise paragraphs, bullet points for lists, numbered steps for processes, examples where useful, and a small comparison table only when it genuinely improves clarity. For academic questions, explain accurately at university level and add an exam tip or practical takeaway when useful. Avoid fake citations, decorative filler and unnecessary repetition.\n\nStudent request:\n${q}`;}
+
+function buildLibraryPrompt(q){return `You are Novel AI, a polished university study assistant inside Novel Match. Answer like a high-quality conversational AI tutor. Start with a direct answer or brief introduction. Use short headings when helpful, concise paragraphs, bullet points for lists, numbered steps for processes, examples where useful, and a small comparison table only when it genuinely improves clarity. For academic questions, explain accurately at university level and add an exam tip or practical takeaway when useful. Avoid fake citations, decorative filler and unnecessary repetition.\n\nStudent request:\n${q}`;}
+function cleanLibraryAIResponse(text){return String(text||'').replace(/^#{1,6}\s*/gm,'').replace(/\*\*\*(.*?)\*\*\*/gs,'$1').replace(/\*\*(.*?)\*\*/gs,'$1').replace(/\*(.*?)\*/gs,'$1').replace(/`([^`]+)`/g,'$1').replace(/^\s*[-*•▪◦●○]\s*/gm,'').replace(/^\s*\d+[\.)]\s*/gm,'').replace(/[⭐✨🔥💡🤖🧠✅❌⚡🎓💯🚀→←↑↓★☆]/gu,'').replace(/^\s*[-_=~|]{3,}\s*$/gm,'').replace(/\n{3,}/g,'\n\n').trim();}
+
+// Third page opens directly to the Novel Match Library.
+document.addEventListener('DOMContentLoaded',()=>{
+  renderFilters();
+  renderBooks();
+  const library=document.getElementById('library');
+  if(library){setTimeout(()=>library.scrollIntoView({behavior:'instant',block:'start'}),50);}
+});
+</script>
+<button id="libraryAIFab" class="library-ai-fab" onclick="toggleLibraryAI()"><i class="fa-solid fa-brain"></i> Novel AI</button>
+<div id="libraryAIPanel" class="library-ai-panel"><div class="library-ai-head"><div><strong><i class="fa-solid fa-brain" style="color:#ffd76a"></i> Novel AI</strong><div id="libraryAIContext" style="font-size:11px;color:var(--muted);margin-top:3px">Library study assistant</div></div><button class="close" style="margin:0" onclick="toggleLibraryAI()">✕</button></div><div id="libraryAIChat" class="library-ai-chat"><div class="library-ai-msg bot">Ask me about any course, book or study topic.</div></div><div class="library-ai-row"><input id="libraryAIInput" placeholder="Ask Novel AI..." onkeydown="handleLibraryAIEnter(event)"><button class="primary library-ai-send" onclick="sendLibraryAI()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
+</body>
+</html>

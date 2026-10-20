@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Novel Match</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    overflow-x: hidden;
+    padding-top: 78px;
+
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255,191,73,.25), transparent 30%),
+        radial-gradient(circle at 88% 15%, rgba(148,75,255,.28), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(255,91,141,.22), transparent 35%),
+        linear-gradient(135deg, #10051d, #28103f 48%, #080716);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+
+    background-size: 45px 45px;
+}
+
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 15px 28px;
+
+    background: rgba(10,5,25,.84);
+
+    border-bottom: 1px solid rgba(255,255,255,.10);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.30);
+}
+
+.site-logo {
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffd76a;
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.site-nav button {
+    margin: 0;
+    padding: 10px 14px;
+
+    border-radius: 11px;
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    background: rgba(255,255,255,.07);
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: none;
+
+    transition: .2s;
+}
+
+.site-nav button:hover {
+    background: rgba(255,255,255,.15);
+    transform: translateY(-2px);
+}
+
+#cartCount {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 21px;
+    height: 21px;
+
+    padding: 0 5px;
+    margin-left: 4px;
+
+    border-radius: 50%;
+
+    background: #ff5f8f;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.screen {
+    display: none;
+
+    min-height: calc(100vh - 78px);
+
+    width: 100%;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    position: relative;
+    z-index: 2;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.card {
+    width: min(720px, 95%);
+
+    padding: 55px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.13),
+            rgba(255,255,255,.045)
+        );
+
+    border: 1px solid rgba(255,255,255,.14);
+
+    border-radius: 32px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    backdrop-filter: blur(18px);
+}
+
+.logo {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: clamp(42px, 8vw, 76px);
+
+    margin-bottom: 15px;
+
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffd76a,
+            #ff9fc5,
+            #b994ff
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 34px;
+    margin-bottom: 18px;
+}
+
+p {
+    color: #ddd7e9;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+}
+
+.subtitle {
+    font-size: 20px;
+
+    max-width: 560px;
+
+    margin: 0 auto 30px;
+}
+
+button,
+.dashboard-button {
+    border: none;
+
+    text-decoration: none;
+
+    display: inline-block;
+
+    cursor: pointer;
+
+    padding: 16px 30px;
+
+    margin-top: 28px;
+
+    border-radius: 15px;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffb84d,
+            #ff5f8f,
+            #8c63ff
+        );
+
+    box-shadow:
+        0 12px 30px rgba(255,95,143,.25);
+
+    transition: .25s;
+}
+
+button:hover,
+.dashboard-button:hover {
+    transform: translateY(-4px) scale(1.02);
+
+    box-shadow:
+        0 18px 40px rgba(255,95,143,.38);
+}
+
+.emoji-wrap {
+    position: relative;
+
+    width: 170px;
+    height: 170px;
+
+    margin: 0 auto 15px;
+}
+
+.emoji {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 135px;
+
+    animation:
+        bounceEmoji .7s infinite alternate ease-in-out,
+        rotateEmoji 2s infinite ease-in-out;
+}
+
+@keyframes bounceEmoji {
+
+    from {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        transform: translate(-50%, -60%) scale(1.08);
+    }
+}
+
+@keyframes rotateEmoji {
+
+    0%, 100% {
+        rotate: -4deg;
+    }
+
+    50% {
+        rotate: 4deg;
+    }
+}
+
+.wink-eye {
+    position: absolute;
+
+    width: 29px;
+    height: 10px;
+
+    border-bottom: 5px solid white;
+
+    border-radius: 50%;
+
+    z-index: 5;
+
+    opacity: 0;
+
+    animation: winkEye 2s infinite;
+}
+
+.wink-left {
+    left: 48px;
+    top: 72px;
+}
+
+.wink-right {
+    right: 48px;
+    top: 72px;
+}
+
+@keyframes winkEye {
+
+    0%, 37%, 100% {
+        opacity: 0;
+        transform: scaleY(1);
+    }
+
+    42%, 52% {
+        opacity: 1;
+        transform: scaleY(.25);
+    }
+
+    57% {
+        opacity: 0;
+        transform: scaleY(1);
+    }
+}
+
+.terms-box {
+    text-align: left;
+
+    max-height: 260px;
+
+    overflow-y: auto;
+
+    padding: 22px;
+
+    margin-top: 20px;
+
+    border-radius: 18px;
+
+    background: rgba(0,0,0,.23);
+
+    border: 1px solid rgba(255,255,255,.10);
+}
+
+.terms-box p {
+    font-size: 14px;
+
+    margin-bottom: 15px;
+}
+
+.check-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+    color: #eee8f8;
+}
+
+.check-row input {
+    width: auto;
+}
+
+.dashboard {
+    width: min(1200px, 94%);
+
+    padding: 40px 0 60px;
+}
+
+.dashboard-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    margin-bottom: 35px;
+}
+
+.dashboard-title {
+    text-align: left;
+}
+
+.dashboard-title > p:first-child {
+    color: #ffd76a;
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 7px;
+}
+
+.dashboard-title h2 {
+    font-size: 46px;
+
+    margin-bottom: 8px;
+}
+
+.dashboard-title p:last-child {
+    color: #bcb2cb;
+}
+
+.user-box {
+    padding: 13px 18px;
+
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    border-radius: 15px;
+}
+
+.user-box span {
+    color: #ffd76a;
+
+    font-weight: 800;
+}
+
+.dashboard-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.feature {
+    padding: 30px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.10),
+            rgba(255,255,255,.035)
+        );
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    min-height: 230px;
+
+    transition: .25s;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.16);
+}
+
+.feature:hover {
+    transform: translateY(-7px);
+
+    border-color:
+        rgba(255,215,106,.35);
+
+    box-shadow:
+        0 25px 55px rgba(0,0,0,.28);
+}
+
+.feature-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 17px;
+
+    margin-bottom: 20px;
+
+    font-size: 27px;
+
+    color: #ffd76a;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,184,77,.17),
+            rgba(140,99,255,.16)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.feature:nth-child(2) .feature-icon {
+    color: #ff8fb1;
+}
+
+.feature:nth-child(3) .feature-icon {
+    color: #a78bfa;
+}
+
+.feature:nth-child(4) .feature-icon {
+    color: #7dd3fc;
+}
+
+.feature:nth-child(5) .feature-icon {
+    color: #facc15;
+}
+
+.feature:nth-child(6) .feature-icon {
+    color: #86efac;
+}
+
+.feature h3 {
+    font-size: 22px;
+
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-size: 15px;
+
+    color: #bdb4ca;
+}
+
+.entertainment-card {
+    cursor: pointer;
+}
+
+.feature-link {
+    display: inline-block;
+
+    margin-top: 18px;
+
+    color: #ffd76a;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+.entertainment-card:hover .feature-link {
+    color: white;
+}
+
+.browse-area {
+    margin-top: 30px;
+
+    padding: 42px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,184,77,.13),
+            rgba(140,99,255,.15)
+        );
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,.20);
+}
+
+.browse-area h2 {
+    margin-bottom: 10px;
+}
+
+.browse-area p {
+    color: #bdb4ca;
+}
+
+.account-panel {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2000;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(2,1,10,.72);
+
+    backdrop-filter: blur(12px);
+}
+
+.panel-card {
+    width: min(500px, 95%);
+
+    padding: 32px;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #241039,
+            #10081d
+        );
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.55);
+}
+
+.panel-card h2 {
+    margin-bottom: 8px;
+}
+
+.panel-card > p {
+    color: #aaa1b5;
+
+    margin-bottom: 20px;
+}
+
+.close-panel {
+    float: right;
+
+    margin: 0 !important;
+
+    width: 35px;
+    height: 35px;
+
+    padding: 0 !important;
+
+    border-radius: 50% !important;
+
+    background: rgba(255,255,255,.08) !important;
+
+    box-shadow: none !important;
+}
+
+.panel-form-group {
+    text-align: left;
+
+    margin-top: 15px;
+}
+
+.panel-form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: 700;
+}
+
+.panel-form-group input {
+    width: 100%;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    background: rgba(0,0,0,.25);
+
+    color: white;
+
+    outline: none;
+}
+
+.panel-button {
+    width: 100%;
+}
+
+.cart-list {
+    margin-top: 18px;
+
+    padding: 18px;
+
+    border-radius: 15px;
+
+    background: rgba(0,0,0,.20);
+
+    color: #ddd7e9;
+}
+
+.empty-cart {
+    text-align: center;
+
+    color: #aaa1b5;
+}
+
+.cart-total {
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid rgba(255,255,255,.10);
+
+    font-size: 19px;
+
+    font-weight: 900;
+}
+
+@media (max-width: 850px) {
+
+    .site-header {
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    body {
+        padding-top: 125px;
+    }
+
+    .screen {
+        min-height: calc(100vh - 125px);
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .site-nav {
+        justify-content: center;
+    }
+
+    .site-nav button {
+        font-size: 12px;
+
+        padding: 9px 10px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-title h2 {
+        font-size: 36px;
+    }
+
+    .card {
+        padding: 35px 22px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="site-header">
+
+```
+<div class="site-logo">
+    📖 Novel Match
+</div>
+
+<nav class="site-nav">
+
+    <button onclick="openPanel('profilePanel')">
+        <i class="fa-solid fa-user"></i>
+        Profile
+    </button>
+
+    <button onclick="openPanel('signupPanel')">
+        <i class="fa-solid fa-user-plus"></i>
+        Sign Up
+    </button>
+
+    <button onclick="openPanel('signinPanel')">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Sign In
+    </button>
+
+    <button onclick="openPanel('cartPanel')">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Cart
+        <span id="cartCount">0</span>
+    </button>
+
+</nav>
+```
+
+</header>
+
+<section id="welcomeScreen" class="screen active">
+
+```
+<div class="card">
+
+    <div class="logo">
+        📖✨
+    </div>
+
+    <h1>
+        Novel Match
+    </h1>
+
+    <p class="subtitle">
+        Discover stories, knowledge, entertainment and products
+        designed to make your journey more exciting.
+    </p>
+
+    <button onclick="startJourney()">
+        Start Your Journey →
+    </button>
+
+</div>
+```
+
+</section>
+
+<section id="emojiScreen" class="screen">
+
+```
+<div class="card">
+
+    <div class="emoji-wrap">
+
+        <div class="wink-eye wink-left"></div>
+        <div class="wink-eye wink-right"></div>
+
+        <div class="emoji">
+            😊
+        </div>
+
+    </div>
+
+    <h2>
+        Hello there! 👋
+    </h2>
+
+    <p>
+        Welcome to Novel Match!
+        <br>
+        Get ready for something exciting.
+    </p>
+
+</div>
+```
+
+</section>
+
+<section id="termsScreen" class="screen">
+
+```
+<div class="card">
+
+    <h2>
+        Terms & Conditions
+    </h2>
+
+    <p>
+        Please review the basic terms before continuing.
+    </p>
+
+    <div class="terms-box">
+
+        <p>
+            <strong>1. Use of Novel Match</strong><br>
+            Novel Match is designed to provide access to
+            educational, entertainment and product discovery
+            experiences.
+        </p>
+
+        <p>
+            <strong>2. User Information</strong><br>
+            Information entered by users should be accurate and
+            should only be used for the intended Novel Match
+            experience.
+        </p>
+
+        <p>
+            <strong>3. Content</strong><br>
+            Users are expected to use the platform responsibly
+            and respect intellectual property rights.
+        </p>
+
+        <p>
+            <strong>4. Responsible Use</strong><br>
+            Novel Match should not be used for unlawful activities,
+            harmful activities or misuse of other people's
+            information.
+        </p>
+
+    </div>
+
+    <label class="check-row">
+
+        <input
+            type="checkbox"
+            id="agreeTerms"
+        >
+
+        <span>
+            I agree to the Terms & Conditions.
+        </span>
+
+    </label>
+
+    <button onclick="acceptTerms()">
+        Accept & Continue →
+    </button>
+
+</div>
+```
+
+</section>
+
+<section id="journeyScreen" class="screen">
+
+```
+<div class="card">
+
+    <div class="logo">
+        🌟📚🎬
+    </div>
+
+    <h2>
+        Your Journey Awaits
+    </h2>
+
+    <p class="subtitle">
+        Your journey to knowledge and entertainment awaits.
+        Discover new stories, explore useful resources and
+        find products made for your interests.
+    </p>
+
+    <button onclick="showScreen('dashboardScreen')">
+        Enter Novel Match →
+    </button>
+
+</div>
+```
+
+</section>
+
+<section id="dashboardScreen" class="screen">
+
+```
+<div class="dashboard">
+
+    <div class="dashboard-header">
+
+        <div class="dashboard-title">
+
+            <p>
+                NOVEL MATCH DASHBOARD
+            </p>
+
+            <h2>
+                Welcome back, Reader 👋
+            </h2>
+
+            <p>
+                Your world of knowledge and entertainment starts here.
+            </p>
+
+        </div>
+
+        <div class="user-box">
+
+            <i class="fa-solid fa-compass"></i>
+
+            Explore:
+
+            <span>
+                Knowledge & Entertainment
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+
+            <h3>
+                Discover Books
+            </h3>
+
+            <p>
+                Explore novels, educational books,
+                reading material and interesting stories.
+            </p>
+
+        </div>
+
+
+        <div
+            class="feature entertainment-card"
+            onclick="window.location.href='next.html#videos'"
+        >
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-film"></i>
+            </div>
+
+            <h3>
+                Entertainment
+            </h3>
+
+            <p>
+                Explore educational videos, courses,
+                documentaries and entertaining content.
+            </p>
+
+            <span class="feature-link">
+                Watch & Learn →
+            </span>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+
+            <h3>
+                Products
+            </h3>
+
+            <p>
+                Browse books, novels, electronics,
+                accessories and other products.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-lightbulb"></i>
+            </div>
+
+            <h3>
+                Learn Something New
+            </h3>
+
+            <p>
+                Discover useful information and resources
+                that can expand your knowledge.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-star"></i>
+            </div>
+
+            <h3>
+                Your Interests
+            </h3>
+
+            <p>
+                Discover content and products that match
+                the things you enjoy.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+
+            <h3>
+                More Coming Soon
+            </h3>
+
+            <p>
+                Novel Match will continue growing with
+                more features and services.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="browse-area">
+
+        <h2>
+            Explore the Novel Match Marketplace
+        </h2>
+
+        <p>
+            Find books, novels, electronics, accessories
+            and more products.
+        </p>
+
+        <a
+            href="next.html"
+            class="dashboard-button"
+        >
+            <i class="fa-solid fa-store"></i>
+            Browse More Products →
+        </a>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<div id="profilePanel" class="account-panel">
+
+```
+<div class="panel-card">
+
+    <button
+        class="close-panel"
+        onclick="closePanel('profilePanel')"
+    >
+        ✕
+    </button>
+
+    <h2>
+        <i class="fa-solid fa-user"></i>
+        Profile
+    </h2>
+
+    <p>
+        Your Novel Match profile.
+    </p>
+
+    <div class="panel-form-group">
+
+        <label>
+            Name
+        </label>
+
+        <input
+            id="profileName"
+            type="text"
+            readonly
+        >
+
+    </div>
+
+    <div class="panel-form-group">
+
+        <label>
+            Email
+        </label>
+
+        <input
+            id="profileEmail"
+            type="text"
+            readonly
+        >
+
+    </div>
+
+    <div class="panel-form-group">
+
+        <label>
+            Interest
+        </label>
+
+        <input
+            id="profileInterest"
+            type="text"
+            readonly
+        >
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<div id="signupPanel" class="account-panel">
+
+```
+<div class="panel-card">
+
+    <button
+        class="close-panel"
+        onclick="closePanel('signupPanel')"
+    >
+        ✕
+    </button>
+
+    <h2>
+        <i class="fa-solid fa-user-plus"></i>
+        Create Account
+    </h2>
+
+    <p>
+        Create your Novel Match account.
+    </p>
+
+    <div class="panel-form-group">
+
+        <label>
+            Full Name
+        </label>
+
+        <input
+            id="signupName"
+            type="text"
+            placeholder="Enter your name"
+        >
+
+    </div>
+
+    <div class="panel-form-group">
+
+        <label>
+            Email
+        </label>
+
+        <input
+            id="signupEmail"
+            type="email"
+            placeholder="Enter your email"
+        >
+
+    </div>
+
+    <div class="panel-form-group">
+
+        <label>
+            Password
+        </label>
+
+        <input
+            id="signupPassword"
+            type="password"
+            placeholder="Create a password"
+        >
+
+    </div>
+
+    <button
+        class="panel-button"
+        onclick="signUp()"
+    >
+        Create Account
+    </button>
+
+</div>
+```
+
+</div>
+
+<div id="signinPanel" class="account-panel">
+
+```
+<div class="panel-card">
+
+    <button
+        class="close-panel"
+        onclick="closePanel('signinPanel')"
+    >
+        ✕
+    </button>
+
+    <h2>
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Sign In
+    </h2>
+
+    <p>
+        Sign in to your Novel Match account.
+    </p>
+
+    <div class="panel-form-group">
+
+        <label>
+            Email
+        </label>
+
+        <input
+            id="signinEmail"
+            type="email"
+            placeholder="Enter your email"
+        >
+
+    </div>
+
+    <div class="panel-form-group">
+
+        <label>
+            Password
+        </label>
+
+        <input
+            id="signinPassword"
+            type="password"
+            placeholder="Enter your password"
+        >
+
+    </div>
+
+    <button
+        class="panel-button"
+        onclick="signIn()"
+    >
+        Sign In
+    </button>
+
+</div>
+```
+
+</div>
+
+<div id="cartPanel" class="account-panel">
+
+```
+<div class="panel-card">
+
+    <button
+        class="close-panel"
+        onclick="closePanel('cartPanel')"
+    >
+        ✕
+    </button>
+
+    <h2>
+        <i class="fa-solid fa-cart-shopping"></i>
+        Your Cart
+    </h2>
+
+    <p>
+        Products added from the marketplace will appear here.
+    </p>
+
+    <div
+        id="cartList"
+        class="cart-list"
+    >
+
+        <div class="empty-cart">
+            Your cart is currently empty.
+        </div>
+
+    </div>
+
+    <div
+        id="cartTotal"
+        class="cart-total"
+    >
+        Items: 0
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+function showScreen(screenId) {
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(function(screen) {
+
+            screen.classList.remove("active");
+
+        });
+
+    document
+        .getElementById(screenId)
+        .classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function startJourney() {
+
+    showScreen("emojiScreen");
+
+    setTimeout(function() {
+
+        showScreen("termsScreen");
+
+    }, 2000);
+
+}
+
+
+function acceptTerms() {
+
+    const checkbox =
+        document.getElementById("agreeTerms");
+
+    if (!checkbox.checked) {
+
+        alert(
+            "Please agree to the Terms & Conditions before continuing."
+        );
+
+        return;
+
+    }
+
+    showScreen("journeyScreen");
+
+}
+
+
+function openPanel(panelId) {
+
+    document
+        .querySelectorAll(".account-panel")
+        .forEach(function(panel) {
+
+            panel.style.display = "none";
+
+        });
+
+    document
+        .getElementById(panelId)
+        .style.display = "flex";
+
+    if (panelId === "profilePanel") {
+
+        updateProfile();
+
+    }
+
+    if (panelId === "cartPanel") {
+
+        updateCartPanel();
+
+    }
+
+}
+
+
+function closePanel(panelId) {
+
+    document
+        .getElementById(panelId)
+        .style.display = "none";
+
+}
+
+
+function updateProfile() {
+
+    const name =
+        localStorage.getItem("novelMatchName") || "";
+
+    const email =
+        localStorage.getItem("novelMatchEmail") || "";
+
+    const interest =
+        localStorage.getItem("novelMatchInterest") ||
+        "Explorer";
+
+
+    document.getElementById(
+        "profileName"
+    ).value = name;
+
+    document.getElementById(
+        "profileEmail"
+    ).value = email;
+
+    document.getElementById(
+        "profileInterest"
+    ).value = interest;
+
+}
+
+
+function signUp() {
+
+    const name =
+        document
+        .getElementById("signupName")
+        .value
+        .trim();
+
+    const email =
+        document
+        .getElementById("signupEmail")
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById("signupPassword")
+        .value;
+
+
+    if (!name || !email || !password) {
+
+        alert(
+            "Please complete all sign-up fields."
+        );
+
+        return;
+
+    }
+
+    localStorage.setItem(
+        "novelMatchAccountName",
+        name
+    );
+
+    localStorage.setItem(
+        "novelMatchAccountEmail",
+        email
+    );
+
+    localStorage.setItem(
+        "novelMatchName",
+        name
+    );
+
+    localStorage.setItem(
+        "novelMatchEmail",
+        email
+    );
+
+    closePanel("signupPanel");
+
+    alert(
+        "Account created successfully! ✅"
+    );
+
+}
+
+
+function signIn() {
+
+    const email =
+        document
+        .getElementById("signinEmail")
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById("signinPassword")
+        .value;
+
+
+    if (!email || !password) {
+
+        alert(
+            "Please enter your email and password."
+        );
+
+        return;
+
+    }
+
+
+    const savedEmail =
+        localStorage.getItem(
+            "novelMatchAccountEmail"
+        );
+
+
+    if (
+        savedEmail &&
+        email === savedEmail
+    ) {
+
+        closePanel("signinPanel");
+
+        alert(
+            "Welcome back to Novel Match! ✅"
+        );
+
+    } else {
+
+        alert(
+            "No matching account was found. Please sign up first."
+        );
+
+    }
+
+}
+
+
+let cartItems =
+    JSON.parse(
+        localStorage.getItem(
+            "novelMatchCart"
+        ) || "[]"
+    );
+
+
+function updateCartCount() {
+
+    document.getElementById(
+        "cartCount"
+    ).textContent = cartItems.length;
+
+}
+
+
+function updateCartPanel() {
+
+    const cartList =
+        document.getElementById("cartList");
+
+    const cartTotal =
+        document.getElementById("cartTotal");
+
+
+    if (cartItems.length === 0) {
+
+        cartList.innerHTML = `
+            <div class="empty-cart">
+                Your cart is currently empty.
+            </div>
+        `;
+
+        cartTotal.textContent =
+            "Items: 0";
+
+        return;
+
+    }
+
+
+    cartList.innerHTML =
+        cartItems
+        .map(function(item, index) {
+
+            return `
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:10px;
+                    padding:10px 0;
+                    border-bottom:1px solid rgba(255,255,255,.08);
+                ">
+
+                    <span>
+                        ${item}
+                    </span>
+
+                    <button
+                        onclick="removeFromCart(${index})"
+                        style="
+                            margin:0;
+                            padding:7px 10px;
+                            font-size:12px;
+                            background:rgba(255,95,143,.25);
+                            box-shadow:none;
+                        "
+                    >
+                        Remove
+                    </button>
+
+                </div>
+            `;
+
+        })
+        .join("");
+
+
+    cartTotal.textContent =
+        "Items: " + cartItems.length;
+
+}
+
+
+function addToCart(productName) {
+
+    cartItems.push(productName);
+
+    localStorage.setItem(
+        "novelMatchCart",
+        JSON.stringify(cartItems)
+    );
+
+    updateCartCount();
+
+    updateCartPanel();
+
+}
+
+
+function removeFromCart(index) {
+
+    cartItems.splice(index, 1);
+
+    localStorage.setItem(
+        "novelMatchCart",
+        JSON.stringify(cartItems)
+    );
+
+    updateCartCount();
+
+    updateCartPanel();
+
+}
+
+
+document
+    .querySelectorAll(".account-panel")
+    .forEach(function(panel) {
+
+        panel.addEventListener(
+            "click",
+            function(event) {
+
+                if (event.target === panel) {
+
+                    panel.style.display = "none";
+
+                }
+
+            }
+        );
+
+    });
+
+
+updateCartCount();
+
+updateProfile();
+
+</script>
+
+</body>
+</html>
